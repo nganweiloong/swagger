@@ -1,0 +1,268 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Eddry Store API documentation",
+    "description": "Eddry Store API\n",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "support@netizenexperience.com"
+    },
+    "version": "6.9.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/qa"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Store",
+      "description": "Everything about Eddry store\n"
+    },
+    {
+      "name": "Access Token",
+      "description": "Retrieve access token based on the email. Please provide the same email as the one used in your job application"
+    }
+  ],
+  "paths": {
+    "/getVoucherList/{token}": {
+      "get": {
+        "tags": ["Store"],
+        "summary": "Retrieve a list of vouchers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Access token for authentication"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with a list of available vouchers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "voucher successfully retrieved"
+                    },
+                    "availableVoucher": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "50% off for all products"
+                          },
+                          "expiryDate": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-01-04T00:00:00.000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid access token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "invalid access token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getAccessToken": {
+      "post": {
+        "tags": ["Access Token"],
+        "summary": "Generate access token based on email",
+        "description": "Important : Please provide the same email as the one used in your job application!",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "test@gmail.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully updated the token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "success update token"
+                    },
+                    "access_token": {
+                      "type": "string",
+                      "example": "d67f63e6d0e8619dc1c0b4bfcda22dcab5e5c2e6f0a07f6b1b4c0d37ed376df9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request, email is required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Email is required"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": ["Store"],
+        "summary": "Retrieve a list of products",
+        "responses": {
+          "200": {
+            "description": "Successful response with a list of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "list of products"
+                    },
+                    "product": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "productId": {
+                            "type": "string",
+                            "example": 1
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Magic Wand"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Store"],
+        "summary": "To purchase a single product",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "Access token for authentication",
+                    "example": "EK"
+                  },
+                  "productId": {
+                    "type": "string",
+                    "description": "ID of the product",
+                    "example": 1
+                  },
+                  "voucher": {
+                    "type": "string",
+                    "description": "Voucher code",
+                    "example": "EK50OFF"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful submission response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Thanks for your submission, our team will get back to you after 3-5 days."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "Bad request!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
